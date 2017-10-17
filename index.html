@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>HTML5 Ball example</title>
+		
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+		<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>		
+		
+  </head>
+
+  <body>
+	
+		<div>
+			<button type="button" id="playButton" class="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off">Pause</button>
+		</div>
+		
+		<div class="btn-group" data-toggle="buttons">
+			<label id="ballButton" class="btn btn-primary active">
+				<input  type="radio" name="options" checked autocomplete="off"> Ball
+			</label>
+			<label id="stickButton" class="btn btn-primary">
+				<input  type="radio" name="options" autocomplete="off"> Stick
+			</label>
+			<label id="boxButton" class="btn btn-primary">
+				<input  type="radio" name="options" autocomplete="off"> Box
+			</label>			
+		</div>
+		
+		<div style="position: relative;">
+	
+			<canvas id="mycanvas" width="500" height="500" style="border: 1px solid grey; position: absolute; left: 0; top: 0; z-index: 1;">
+			</canvas>
+		</div>
+
+	<script src="settings.js"></script>
+
+	<script src="classes.js"></script>
+
+	<script>
+	
+		var isPlaying = true;
+		var objType = ShapeEnum.BALL;
+		
+		$("#playButton").click(function(){
+			if (isPlaying){
+				console.log("switch to pause");
+				stop();
+			} else {
+				console.log("switch to play");
+				start();
+			}
+		});
+		
+		function start()
+		{
+			$("#playButton").html("Pause");
+			isPlaying = true;
+		}
+		
+		function stop()
+		{
+			$("#playButton").html("Play");
+			isPlaying = false;
+
+		}
+		
+		$("#ballButton").click(function(){
+			console.log("switch to ball");
+			objType = ShapeEnum.BALL;
+			reset();
+		});
+		
+		$("#stickButton").click(function(){
+			console.log("switch to stick");
+			objType = ShapeEnum.STICK;
+			reset();
+		});
+		
+		$("#boxButton").click(function(){
+			console.log("switch to box");
+			objType = ShapeEnum.BOX;
+			reset();
+		});
+		
+		
+		
+		
+		var obj;
+		
+		
+		
+		function reset()
+		{
+			
+		
+			if (objType === ShapeEnum.BALL)
+			{
+
+				var center = StateFactory.getState(xCenterDefault, yCenterDefault, xVelocityDefault, yVelocityDefault, "ball center");
+				var ball	 = new Ball(radiusDefault, center);
+				
+				obj = ball;
+
+				redraw();
+				start();
+				
+			}
+			else if (objType === ShapeEnum.STICK)
+			{
+				
+				var center = StateFactory.getState(xCenterDefault, yCenterDefault, xVelocityDefault, yVelocityDefault, "stick center");
+				var stick = new Stick(center, angleDefault, 2*radiusDefault);
+				
+				obj = stick;
+				redraw();
+				start();			
+			}
+			else if (objType === ShapeEnum.BOX)
+			{
+				
+				var center = StateFactory.getState(xCenterDefault, yCenterDefault, xVelocityDefault, yVelocityDefault, "box center");
+				var box	 = new Box(center, angleDefault, radiusDefault*2);
+				
+				obj = box;
+				redraw();
+				start();			
+			}			
+		}
+		
+		
+	
+		var myCanvas = document.getElementById("mycanvas");
+		var context = myCanvas.getContext("2d");
+		
+		
+		
+		
+					
+		
+
+		
+		
+	
+		
+		reset();
+		
+		function drawCanvas()
+		{
+			drawFloor();
+			obj.draw();
+			obj.update();
+		}
+		
+		function drawFloor()
+		{
+				context.beginPath();
+
+				context.moveTo(0,   floorHeight*pixelsPerMeter);
+				context.lineTo(500, floorHeight*pixelsPerMeter);
+				context.strokeStyle = colorFloor;
+				context.lineWidth = 3;
+				context.stroke();	
+				context.closePath();	
+				console.log("floor drawn");					
+		}
+		
+		
+		
+		
+	
+		
+		
+		
+		
+
+		
+		function loop()
+		{
+			if (isPlaying){
+				redraw();
+			}
+			setTimeout(loop, 1000*t*replaySlowdownFactor);
+		}
+		
+		function redraw()
+		{
+		  // first clear canvas
+			context.clearRect(0, 0, 500, 500);
+
+			// then redraw canvas
+			drawCanvas();
+		}
+		
+		loop(redraw);
+		
+
+		
+	</script>
+	
+	</body>
+	
+</html>

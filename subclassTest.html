@@ -1,0 +1,65 @@
+<html>
+	<head>
+	</head>
+	<body>
+	
+		<script>
+			class Animal
+			{
+				constructor(name)
+				{
+					this.descriptor = "animal";
+					this.name = name;
+				}
+				
+				getName()
+				{
+					return this.name;
+				}
+				
+				getDescriptor()
+				{
+					return this.descriptor;
+				}
+				
+				toString()
+				{
+					return "This is an " + this.descriptor + " named " + this.name;
+					
+				}
+				
+				
+			}
+			
+			class Dog extends Animal
+			{
+				constructor(name)
+				{
+					super(name);
+					this.variety = "Shiba";
+					this.descriptor = "dog";
+					//Super.call(this, name);
+				}		
+
+				toString()
+				{
+					return "This is a " + this.variety + " " + this.descriptor + " named " + this.name;
+					
+				}
+				
+			}
+			Dog.prototype = Object.create(Animal.prototype);
+
+			
+			var dog = new Dog("Kaji");
+			
+			//console.log(dog.prototype.toString()); // this method is overridden in child class but the parent class is called
+
+			console.log(dog.toString()); // this method is overridden in child class
+			console.log(dog.getName()); // this method is from parent class
+			console.log(dog.getDescriptor()); // this method is from parent class
+			
+			
+		</script>
+	</body>
+</html>
